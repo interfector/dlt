@@ -1,0 +1,7 @@
+I only thought a very simple system to inject(plugins , wtf?) in all programs...
+
+First, i found hook links in the dynamic library file, second i
+try to retrieve his size from the elf, and then i try to inject the
+hooked function in the process memory...
+
+But i doesn't work :(

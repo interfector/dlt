@@ -1,0 +1,24 @@
+#!/bin/bash
+
+nofile()
+{
+    echo "Insert file to modulize"
+    exit 1
+}
+
+invalid()
+{
+    if [[ "$1" != *.c ]]; then
+        echo "Invalid file"
+        exit 1
+    fi
+}
+
+FILE=$1 || nofile
+invalid $FILE
+OBJECT=$(echo $FILE | sed 's/\.c$/.o/')
+MODULE=$(echo $FILE | sed 's/\.c$/.so/')
+
+gcc -c -o $OBJECT $FILE -I/usr/local/include 
+gcc -shared -Wl,-soname,$MODULE -o $MODULE $OBJECT
+rm $OBJECT

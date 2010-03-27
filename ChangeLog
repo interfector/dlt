@@ -1,0 +1,10 @@
+2010-03-23 nex <nex@autistici.org>
+
+* trace.c: try to inject in a process
+
+* elf.c: to retrieve symbol size
+
+* module.c: module management
+
+* main.c: main function
+
