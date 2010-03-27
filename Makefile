@@ -13,13 +13,12 @@ BIN = dlt
 
 all:
 	gcc -o $(BIN) $(SRC) $(CFLAGS)
-
-example:
 	bin/modcomp example/asm.c
 	bin/modcomp example/test.c
 
 clean:
 	rm -f $(BIN)
+	rm -f example/*.so
 
 install: all
 	cp -f $(BIN) /usr/local/bin/
