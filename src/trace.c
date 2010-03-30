@@ -23,10 +23,10 @@
 #include <sys/user.h> /* linux/user.h */
 #include <dlt.h>
 
-void MemInject(int,struct user_regs_struct,char*,int);
+void MemInject(int,struct user_regs_struct,int*,int);
 
 int
-HookInject(HOOKED * hook,int size,int pid)
+HookInject(HOOKED * hook,int pid)
 {
 	struct user_regs_struct reg;
        
@@ -39,7 +39,7 @@ HookInject(HOOKED * hook,int size,int pid)
         
 	printf("@ Writing EIP at 0x%.8lx.\n",reg.eip);
 
-	MemInject(pid,reg,(char*)hook->init_hook,size);
+	MemInject(pid,reg,(int*)hook->init_hook,hook->size);
 
 	ptrace (PTRACE_DETACH,pid,0,0);
 
@@ -47,7 +47,7 @@ HookInject(HOOKED * hook,int size,int pid)
 }
 
 void
-MemInject(int pid,struct user_regs_struct regs,char* shellcode,int size)
+MemInject(int pid,struct user_regs_struct regs,int* shellcode,int size)
 {
 	int i;
 	

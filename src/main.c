@@ -99,7 +99,7 @@ main (int argc, char **argv)
 
 	hooker->init_hook = (int (*)()) hook_value;
 
-	if(HookInject(hooker,hooker->size,pid) < 0)
+	if(HookInject(hooker,pid) < 0)
 	{
 		perror("ptrace");
 

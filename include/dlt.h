@@ -52,4 +52,4 @@ void die(int,char*,...);
 	       "under certain conditions; type `show c' for details.\n"
 
 int ElfSym_read(char*,char*);
-int HookInject(HOOKED*,int,int);
+int HookInject(HOOKED*,int);
