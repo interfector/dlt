@@ -4,7 +4,7 @@
 
 INIT_HOOK;
 
-HOOK_ASM(hook_lol);
+HOOK_ASM(hook_dyn);
 /* Print to check */
 asm("movb	$0x4,%al");
 asm("movb	$0x1,%bl");
@@ -20,4 +20,4 @@ END_HOOK;
 
 HOOK_SIZE;
 
-HOOK(hook_lol);
+HOOK(hook_dyn);
