@@ -8,7 +8,7 @@ LIBS = -ldl -lpthread
 # flags
 CFLAGS = -Wall -O3 ${LIBS} -DVERSION=\"${VERSION}\" -I./include
 
-SRC = src/main.c src/module.c src/elf.c src/trace.c
+SRC = src/main.c src/module.c src/trace.c
 BIN = dlt
 
 all:
@@ -20,6 +20,6 @@ clean:
 	rm -f $(BIN)
 	rm -f example/*.so
 
-install: all
+install:
 	cp -f $(BIN) /usr/local/bin/
-	cp -f include/dlt.h /usr/local/include
+	cp -f example/hook.h /usr/local/include

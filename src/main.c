@@ -25,8 +25,6 @@
 
 extern HOOKED * hooker;
 
-extern char* hook_value;
-
 void
 die (int code,char* fmt,...)
 {
@@ -50,6 +48,25 @@ banner ()
 		  " / _` | | __|\n"
 	       "| (_| | | |_ \n"
 		  " \\__,_|_|\\__|\n\n");
+}
+
+void
+dump_code(char* code,int size)
+{
+	int i;
+
+	for(i=0;i < size;i++)
+	{
+		if((i % 2) == 0)
+			putchar(' ');
+		else
+		if((i % 16) == 0)
+			putchar('\n');
+
+		printf("%.2x",(unsigned int)code[i]);
+	}
+
+	putchar('\n');
 }
 
 int
@@ -90,14 +107,10 @@ main (int argc, char **argv)
 
 	load_module(module);
 
-	ch = ElfSym_read(module,hooker->sym);
-
 	if(hooker->size <= 0)
 		die(1,"* Error: symbol size must be > 0.\n");
 
 	printf("@ Hook: found at <%p>[0..%u] <%p>.\n",hooker->init_hook,hooker->size,hooker->init_hook+hooker->size);
-
-	hooker->init_hook = (int (*)()) hook_value;
 
 	if(HookInject(hooker,pid) < 0)
 	{

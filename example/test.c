@@ -1,17 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "hook.h"
 
-HOOKFUNC(hook_test)
-{
-	printf("Test 1!\n");
+INIT_HOOK;
 
-	exit(0);
-}
+HOOK_ASM(hook_test);
 
-int hook_size()
-{
-	return 30;
-}
+asm("movb	$0x4,%al");
+asm("movb	$0x1,%bl");
+asm("movl	$0x8049501,%ecx");
+asm("movb $163,%dl");
+asm("int	$0x80");
+
+asm("exit:");
+asm("movb	$0x1,%al");
+asm("xorb	%bl,%bl");
+asm("int	$0x80");
+
+END_HOOK;
+
+HOOK_SIZE;
 
 HOOK(hook_test);

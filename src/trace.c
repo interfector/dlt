@@ -17,35 +17,74 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/ptrace.h>
 #include <sys/user.h> /* linux/user.h */
 #include <dlt.h>
 
-void MemInject(int,struct user_regs_struct,int*,int);
+void MemInject(int,long,void*,int);
+void MemGet(int,long,long*,int);
+
+#define WORD_SIZE 4
 
 int
 HookInject(HOOKED * hook,int pid)
 {
+	long * backup;
 	struct user_regs_struct reg;
        
 	if(ptrace(PTRACE_ATTACH,pid,0,0) <0)
 		return -1;
+		
+	backup = malloc(hook->size);
 
-	wait ((int*) 0);
+	wait (NULL);
 
 	ptrace(PTRACE_GETREGS,pid,0,&reg);
         
 	printf("@ Writing EIP at 0x%.8lx.\n",reg.eip);
 
-	MemInject(pid,reg,(int*)hook->init_hook,hook->size);
+	MemGet(pid,reg.eip,backup,hook->size);
+	MemInject(pid,reg.eip,hook->init_hook,hook->size);
+
+	ptrace(PTRACE_SETREGS,pid,NULL,&reg);
+	ptrace(PTRACE_CONT,pid,NULL,NULL);
+
+	wait(NULL);
+
+	printf("@ Restoring execution.\n");
+	MemInject(pid,reg.eip,backup,hook->size);
 
 	ptrace (PTRACE_DETACH,pid,0,0);
 
 	return 0;
 }
 
+void MemGet(int child,long addr,long *str,int len)
+{
+	int i = 0;
+
+	for(i=0;i < len;i++)
+		str[i] = ptrace(PTRACE_PEEKDATA,child,addr + i * WORD_SIZE,NULL);
+}
+
+void MemInject(int child,long addr,void *vptr,int len)
+{
+	int count = 0;
+	long word;
+
+	while (count < len)
+	{
+		memcpy(&word , vptr+count , WORD_SIZE);
+		word = ptrace(PTRACE_POKETEXT, child , addr+count , word);
+		count += WORD_SIZE;
+	}
+}
+
+/*
 void
 MemInject(int pid,struct user_regs_struct regs,int* shellcode,int size)
 {
@@ -54,3 +93,4 @@ MemInject(int pid,struct user_regs_struct regs,int* shellcode,int size)
 	for (i = 0; i < size; i++)
 		ptrace (PTRACE_POKETEXT, pid, regs.eip + i, *(int*) (shellcode + i));   
 }
+*/

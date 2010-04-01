@@ -51,5 +51,4 @@ void die(int,char*,...);
 		  "This is free software, and you are welcome to redistribute it\n" \
 	       "under certain conditions; type `show c' for details.\n"
 
-int ElfSym_read(char*,char*);
 int HookInject(HOOKED*,int);
