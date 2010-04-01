@@ -15,6 +15,7 @@ all:
 	gcc -o $(BIN) $(SRC) $(CFLAGS)
 	bin/modcomp example/asm.c
 	bin/modcomp example/test.c
+	bin/modcomp example/dyn.c
 
 clean:
 	rm -f $(BIN)

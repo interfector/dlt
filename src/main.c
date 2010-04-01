@@ -50,25 +50,6 @@ banner ()
 		  " \\__,_|_|\\__|\n\n");
 }
 
-void
-dump_code(char* code,int size)
-{
-	int i;
-
-	for(i=0;i < size;i++)
-	{
-		if((i % 2) == 0)
-			putchar(' ');
-		else
-		if((i % 16) == 0)
-			putchar('\n');
-
-		printf("%.2x",(unsigned int)code[i]);
-	}
-
-	putchar('\n');
-}
-
 int
 main (int argc, char **argv)
 {
