@@ -3,7 +3,7 @@
 VERSION = 0.0.1
 
 # includes and libs
-LIBS = -ldl -lpthread
+LIBS = -ldl
 
 # flags
 CFLAGS = -Wall -O3 ${LIBS} -DVERSION=\"${VERSION}\" -I./include
