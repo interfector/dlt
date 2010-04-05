@@ -5,6 +5,12 @@
 INIT_HOOK;
 
 HOOK_ASM(hook_dyn);
+/*
+asm("movl	$"ADDR",%eax");
+asm("movl	$0x0a,(%eax)");
+*/
+
+
 /* Print to check */
 asm("movb	$0x4,%al");
 asm("movb	$0x1,%bl");

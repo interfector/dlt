@@ -16,6 +16,7 @@ all:
 	bin/modcomp example/asm.c
 	bin/modcomp example/test.c
 	bin/modcomp example/dyn.c
+	bin/modcomp example/call.c
 
 clean:
 	rm -f $(BIN)
