@@ -1,5 +1,7 @@
 2010-03-23 nex <nex@autistici.org>
 
+* module.c: removed module listing implementation
+
 * trace.c: try to inject in a process
 
 * elf.c: to retrieve symbol size
