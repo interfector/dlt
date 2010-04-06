@@ -17,15 +17,7 @@
  */
 
 
-typedef struct MODULE   MODULE;
 typedef struct HOOKED   HOOKED;
-
-struct MODULE
-{
-    char    *   name;
-    void    *   handle;
-    MODULE  *   next;
-};
 
 struct HOOKED
 {
@@ -35,10 +27,6 @@ struct HOOKED
     int size;
 };
 
-MODULE* module_init (void);
-void module_append (MODULE *);
-void module_free (MODULE *);
-void module_delete (MODULE *);
 void load_module (char *);
 void load_hook(HOOKED*);
 

@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * shura thanks... <3
- * Thanks to shura for his code, included in bbot 
- * , downloadable at http://github.com/shurizzle/bbot
  */
 
 
@@ -27,91 +24,34 @@
 #include <dlfcn.h>
 #include <dlt.h>
 
-/* Thanks to shura for his code, included in bbot 
- * , downloadable at http://github.com/shurizzle/bbot */
-
-MODULE* modules = NULL;
 HOOKED* hooker;
-
-MODULE *
-module_init (void)
-{
-    MODULE * newmodule = (MODULE *) calloc (1, sizeof (MODULE));
-    newmodule->name = newmodule->handle = newmodule->next =NULL;
-    return newmodule;
-}
-
-void
-module_append (MODULE * to_append)
-{
-    MODULE * tmp = modules;
-    if (modules == NULL)
-    {
-        modules = to_append;
-        return;
-    }
-    while (tmp->next != NULL)
-        tmp = tmp->next;
-    tmp->next = to_append;
-}
-
-void
-module_free (MODULE * to_free)
-{
-    free (to_free->name);
-    free (to_free->handle);
-    free (to_free);
-}
-
-void
-module_delete (MODULE * to_del)
-{
-    MODULE * tmp = modules;
-
-    if (tmp == to_del)
-    {
-        modules = modules->next;
-        module_free (tmp);
-    }
-
-    while (tmp->next != to_del)
-        tmp = tmp->next;
-
-    tmp->next = to_del->next;
-    module_free (to_del);
-}
 
 void
 load_module (char * file)
 {
-    MODULE * module = module_init ();
-    char * error, * x, i;
-    HOOKED * hook;
+	FILE* handle;
+	char * error;
+	HOOKED * hook;
 
-    for (i = 0, x = file; *x; x++)
-        if (*x == '/')
-            i = x - file + 1;
+	handle = dlopen (file, RTLD_LAZY);
 
-    module->name = strdup (file + i);
+	if (!handle)
+	{
+		fprintf (stderr, "Couldn't load %s: %s\n", file, dlerror ());
+		exit(1);
+	}
 
-    module->handle = dlopen (file, RTLD_LAZY);
-    if (!module->handle)
-    {
-        fprintf (stderr, "Couldn't load %s: %s\n", file, dlerror ());
-	   exit(1);
-    }
+	dlerror();
+	hook = (HOOKED *) dlsym (handle, "hook");
+	hook->size = ((int (*)()) dlsym(handle,"hook_size"))();
 
-    dlerror ();
-    hook = (HOOKED *) dlsym (module->handle, "hook");
-    hook->size = ((int (*)()) dlsym(module->handle,"hook_size"))();
-    if ((error = dlerror ()))
-    {
-        fprintf (stderr, "Invalid module, couldn't found initialization\n\t%s\n", error);
-	   exit(1);
-    }
+	if ((error = dlerror ()))
+	{
+		fprintf (stderr, "Couldn't initialize the hook function.\n\t%s\n", error);
+		exit(1);
+	}
 
-    load_hook (hook);
-    module_append (module);
+	load_hook (hook);
 }
 
 void
@@ -119,6 +59,5 @@ load_hook (HOOKED* hook)
 {
 	printf("@ SymLink:\t%s.\n",
 			hook->sym);
-
 	hooker = hook;
 }
